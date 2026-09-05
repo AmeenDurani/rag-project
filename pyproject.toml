@@ -1,0 +1,37 @@
+[project]
+name = "rag-project"
+version = "0.1.0"
+description = "A from-scratch RAG pipeline: ingestion, chunking, embedding, retrieval, and generation over Claude."
+requires-python = ">=3.12"
+dependencies = [
+    "pypdf>=6.16",
+    "fastembed>=0.8",
+    "anthropic>=0.69",
+    "pinecone>=5.4",
+    "pydantic-settings>=2.6",
+    "typer>=0.15",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-mock>=3.14",
+    "ruff>=0.8",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+    "httpx>=0.28",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

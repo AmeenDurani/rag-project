@@ -1,0 +1,30 @@
+# Environments
+.venv/
+.venv312/
+venv/
+env/
+*.egg-info/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Eval / experiment outputs
+eval_results/
+*.log
+
+# OS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
