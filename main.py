@@ -31,7 +31,7 @@ def ingest(namespace: str = "default") -> None:
 
     all_chunks = []
     for document in documents:
-        chunks = chunk_documents(document["text"], document["source"])
+        chunks = chunk_documents(document["pages"], document["source"])
         all_chunks.extend(chunks)
 
     typer.echo(f"Loaded {len(documents)} document(s), {len(all_chunks)} chunk(s). Embedding...")

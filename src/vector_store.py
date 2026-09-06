@@ -12,6 +12,8 @@ class RetrievedChunk:
     text: str
     source: str
     chunk_id: int
+    page_start: int
+    page_end: int
     score: float
 
 
@@ -57,6 +59,8 @@ class PineconeStore:
                     "text": chunk.chunk,
                     "source": chunk.source,
                     "chunk_id": chunk.chunk_id,
+                    "page_start": chunk.page_start,
+                    "page_end": chunk.page_end,
                 },
             )
             for chunk in chunks
@@ -77,6 +81,8 @@ class PineconeStore:
                 text=match.metadata["text"],
                 source=match.metadata["source"],
                 chunk_id=match.metadata["chunk_id"],
+                page_start=match.metadata["page_start"],
+                page_end=match.metadata["page_end"],
                 score=match.score,
             )
             for match in response.matches
