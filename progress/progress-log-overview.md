@@ -20,3 +20,4 @@ Without both, nothing past Day 1's code can be verified end-to-end — see `wire
 - [`wire-cli-and-fix-config-consistency.md`](wire-cli-and-fix-config-consistency.md) — main.py CLI, fixed a config-boundary inconsistency in PineconeStore
 - [`add-page-provenance-to-chunks.md`](add-page-provenance-to-chunks.md) — Chunk/RetrievedChunk gained page_start/page_end, needed for page-level eval ground truth
 - [`add-retrieval-metrics-eval.md`](add-retrieval-metrics-eval.md) — recall@k/MRR scoring against the eval set, composition-root runner
+- [`add-answer-quality-eval.md`](add-answer-quality-eval.md) — LLM-as-judge faithfulness/relevance/scope-handling eval, binary pass/fail scoring
