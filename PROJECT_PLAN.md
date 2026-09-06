@@ -46,14 +46,14 @@ Goal: build a naive RAG pipeline, understand it deeply, then turn it into an ind
 
 ## Day 2 — Prove it works, then improve it
 
-- [ ] Build an eval set: 15–25 Q&A pairs grounded in the NASA handbook
-- [ ] Include a handful of **out-of-scope / no-answer** questions (see "make this better" below — don't skip this)
-- [ ] Retrieval metrics: recall@k, MRR against the eval set
-- [ ] Answer quality eval: LLM-as-judge (Claude) scoring faithfulness/relevance, logged to JSON/CSV
+- [x] Build an eval set: 15–25 Q&A pairs grounded in the NASA handbook
+- [x] Include a handful of **out-of-scope / no-answer** questions (see "make this better" below — don't skip this)
+- [x] Retrieval metrics: recall@k, MRR against the eval set
+- [x] Answer quality eval: LLM-as-judge (Claude) scoring faithfulness/relevance, logged to JSON/CSV
 - [ ] Upgrade chunking to token-aware (real tokenizer, not word count), tune chunk size/overlap using the baseline, re-run eval
 - [ ] Stretch: citations in the answer (page/source per claim)
 
-**Milestone:** quantified retrieval/answer quality with a documented before/after improvement.
+**Milestone:** quantified retrieval/answer quality with a documented before/after improvement. **Status: eval harness code-complete, unverified end-to-end** — same blocker as Day 1, plus the harness needs a real `baseline` run before milestone 4 (chunking upgrade) has anything to tune against or compare to. See `progress/` for the full build log; stopped here for this session, resuming with milestone 4 next.
 
 ## Day 3 — Service layer + observability + tests
 
