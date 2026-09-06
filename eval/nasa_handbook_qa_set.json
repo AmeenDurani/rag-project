@@ -1,0 +1,181 @@
+{
+  "_schema_notes": "relevant_pages are 1-indexed PDF page numbers (matches Chunk.page_start/page_end), not printed page numbers in the handbook's own footer. A retrieved chunk counts as a recall hit if [chunk.page_start, chunk.page_end] overlaps any page in relevant_pages. expected_answerable=false entries have relevant_pages=[] by definition - there is no correct source page because the corpus genuinely doesn't contain the answer. category is informational only (for slicing results later), not consumed by scoring logic.",
+  "questions": [
+    {
+      "id": "q01",
+      "category": "factual",
+      "question": "What is the purpose of the NASA Systems Engineering Handbook?",
+      "expected_answerable": true,
+      "relevant_pages": [11],
+      "reference_answer": "To provide general guidance and a generic description of systems engineering as it should be applied throughout NASA, increasing awareness and consistency across the Agency and advancing the practice of SE."
+    },
+    {
+      "id": "q02",
+      "category": "factual",
+      "question": "What document should this handbook be used as a companion to?",
+      "expected_answerable": true,
+      "relevant_pages": [11],
+      "reference_answer": "NPR 7123.1, Systems Engineering Processes and Requirements, along with Center-specific handbooks and directives."
+    },
+    {
+      "id": "q03",
+      "category": "factual",
+      "question": "Do all NASA projects follow all 17 SE processes, or does something else vary by project size and complexity?",
+      "expected_answerable": true,
+      "relevant_pages": [12],
+      "reference_answer": "All 17 processes apply to all projects; what varies by project type, size, and complexity is the amount of formality, depth of documentation, and timescales."
+    },
+    {
+      "id": "q04",
+      "category": "factual",
+      "question": "How does NASA define 'systems engineering'?",
+      "expected_answerable": true,
+      "relevant_pages": [13],
+      "reference_answer": "A methodical, multi-disciplinary approach for the design, realization, technical management, operations, and retirement of a system."
+    },
+    {
+      "id": "q05",
+      "category": "factual",
+      "question": "According to the handbook, what is a 'system'?",
+      "expected_answerable": true,
+      "relevant_pages": [13],
+      "reference_answer": "The combination of elements - hardware, software, equipment, facilities, personnel, processes, and procedures - that function together to produce the capability required to meet a need."
+    },
+    {
+      "id": "q06",
+      "category": "list",
+      "question": "What are the three sets of common technical processes described in NPR 7123.1?",
+      "expected_answerable": true,
+      "relevant_pages": [15],
+      "reference_answer": "System design processes, product realization processes, and technical management processes."
+    },
+    {
+      "id": "q07",
+      "category": "process-explanation",
+      "question": "Of the 17 common technical processes in NPR 7123.1, which numbered processes represent project execution tasks, and which represent crosscutting tools?",
+      "expected_answerable": true,
+      "relevant_pages": [15],
+      "reference_answer": "Processes 1 through 9 represent the tasks in the execution of a project; processes 10 through 17 are crosscutting tools for carrying out those processes."
+    },
+    {
+      "id": "q08",
+      "category": "list",
+      "question": "What are the four System Design Processes in the SE engine?",
+      "expected_answerable": true,
+      "relevant_pages": [15, 16],
+      "reference_answer": "Stakeholder Expectations Definition, Technical Requirements Definition, Logical Decomposition, and Design Solution Definition."
+    },
+    {
+      "id": "q09",
+      "category": "list",
+      "question": "What are the five Product Realization Processes in the SE engine?",
+      "expected_answerable": true,
+      "relevant_pages": [15, 16],
+      "reference_answer": "Product Implementation, Product Integration, Product Verification, Product Validation, and Product Transition."
+    },
+    {
+      "id": "q10",
+      "category": "list",
+      "question": "What are the eight Technical Management Processes in the SE engine?",
+      "expected_answerable": true,
+      "relevant_pages": [15, 16],
+      "reference_answer": "Technical Planning, Requirements Management, Interface Management, Technical Risk Management, Configuration Management, Technical Data Management, Technical Assessment, and Decision Analysis."
+    },
+    {
+      "id": "q11",
+      "category": "process-explanation",
+      "question": "Per NPR 7123.1, what is the difference between applying an SE process 'iteratively' versus 'recursively'?",
+      "expected_answerable": true,
+      "relevant_pages": [17],
+      "reference_answer": "'Iterative' means applying a process to the same product to correct a discovered discrepancy or variation from requirements. 'Recursive' means repeated application of processes to design the next lower layer of system products or realize the next upper layer of end products, adding value as the system structure is built up."
+    },
+    {
+      "id": "q12",
+      "category": "factual",
+      "question": "What is AS9100, and why is it referenced in this handbook?",
+      "expected_answerable": true,
+      "relevant_pages": [17],
+      "reference_answer": "AS9100 is a widely adopted quality management system standard for the commercial aerospace industry. Some NASA Centers certify to AS9100 and may require contractors to follow NPR 7123.1, so the handbook maps the 17 SE processes to AS9100 requirements."
+    },
+    {
+      "id": "q13",
+      "category": "factual",
+      "question": "How many times does the SE engine cycle through the technical development processes (steps 1-9) across the project life cycle, and how many times does it cycle through the technical management processes (steps 10-17)?",
+      "expected_answerable": true,
+      "relevant_pages": [19],
+      "reference_answer": "The technical development processes cycle five times, from Pre-Phase A through Phase D. The technical management processes cycle seven times, from Pre-Phase A through Phase F."
+    },
+    {
+      "id": "q14",
+      "category": "list",
+      "question": "List the seven phases of the NASA project life cycle, from Pre-Phase A through Phase F.",
+      "expected_answerable": true,
+      "relevant_pages": [18, 19],
+      "reference_answer": "Pre-Phase A (Concept Studies), Phase A (Concept and Technology Development), Phase B (Preliminary Design and Technology Completion), Phase C (Final Design and Fabrication), Phase D (System Assembly, Integration and Test, Launch), Phase E (Operations and Sustainment), and Phase F (Closeout)."
+    },
+    {
+      "id": "q15",
+      "category": "factual",
+      "question": "What is the purpose of Pre-Phase A: Concept Studies?",
+      "expected_answerable": true,
+      "relevant_pages": [19],
+      "reference_answer": "To produce a broad spectrum of ideas and alternatives for missions from which new programs/projects can be selected, determine feasibility, develop mission concepts, draft system-level requirements, and assess performance, cost, and schedule feasibility."
+    },
+    {
+      "id": "q16",
+      "category": "factual",
+      "question": "What is the typical outcome of Phase F: Closeout, and what does that phase involve?",
+      "expected_answerable": true,
+      "relevant_pages": [19],
+      "reference_answer": "The typical outcome is product closeout. The phase involves implementing the systems decommissioning/disposal plan developed in Phase E and analyzing any returned data or samples."
+    },
+    {
+      "id": "q17",
+      "category": "process-explanation",
+      "question": "During Phase D, which side of the SE engine is used, and what activities does it perform?",
+      "expected_answerable": true,
+      "relevant_pages": [20],
+      "reference_answer": "Phase D uses the right side of the SE engine (Product Realization) to recursively perform final implementation, integration, verification, and validation of the end product, then transition it to the user at the final pass."
+    },
+    {
+      "id": "q18",
+      "category": "factual",
+      "question": "What is a Concept of Operations (ConOps), and in which project phase is it first developed?",
+      "expected_answerable": true,
+      "relevant_pages": [20],
+      "reference_answer": "One or more ConOps scenarios are first defined in Pre-Phase A as part of developing initial concepts; the handbook stresses that early ConOps development is important because it helps stakeholders visualize the end product and check for missing or conflicting requirements."
+    },
+    {
+      "id": "oos01",
+      "category": "out_of_scope_irrelevant",
+      "question": "What is NASA's budget request for the Artemis program in fiscal year 2025?",
+      "expected_answerable": false,
+      "relevant_pages": [],
+      "reference_answer": "Not answerable from the provided context - this handbook covers systems engineering process, not program budgets, and the corpus contains no budget figures."
+    },
+    {
+      "id": "oos02",
+      "category": "out_of_scope_adversarial",
+      "question": "What are the detailed steps of the Technical Risk Management process described in Section 6.4?",
+      "expected_answerable": false,
+      "relevant_pages": [],
+      "reference_answer": "Not answerable from the provided context - Section 6.4 is listed in the table of contents, but its actual body text is not included in this excerpt of the handbook (which stops at Section 2.3)."
+    },
+    {
+      "id": "oos03",
+      "category": "out_of_scope_irrelevant",
+      "question": "How do you calculate the required delta-v for a Hohmann transfer orbit?",
+      "expected_answerable": false,
+      "relevant_pages": [],
+      "reference_answer": "Not answerable from the provided context - this is an orbital mechanics calculation, not a systems engineering process topic covered by this handbook excerpt."
+    },
+    {
+      "id": "oos04",
+      "category": "out_of_scope_adversarial",
+      "question": "What is Human Systems Integration (HSI), and what are its domains, as described in Section 2.6?",
+      "expected_answerable": false,
+      "relevant_pages": [],
+      "reference_answer": "Not answerable from the provided context - Section 2.6 (HSI in the SE Process) is listed in the table of contents, but its body text is not included in this excerpt of the handbook (which stops at Section 2.3)."
+    }
+  ]
+}
