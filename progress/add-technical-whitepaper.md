@@ -103,13 +103,18 @@ locally, and actually exercised the page rather than trusting the source:
 - Re-verified after each fix (initial stacked-label attempt, then the
   run-collapsing fix) rather than assuming the second attempt worked.
 
+## Deployed
+
+Live at `https://rag-project-tawny.vercel.app/` (repo owner connected the
+GitHub repo via the Vercel dashboard with Root Directory = `whitepaper`, no
+build command - exactly the zero-config path `vercel.json` was prepared for).
+Re-verified everything against the live URL with the same Playwright checks
+run against the local copy - correct bar/legend counts (12 and 9 bars), a
+working hover tooltip with correct content, the table-view toggle, and zero
+console errors - rather than assuming a successful local render implies a
+successful deployment. README's whitepaper link updated from the
+`YOUR-VERCEL-PROJECT.vercel.app` placeholder to the real URL.
+
 ## Not done yet
 
-- **Actual Vercel deployment.** Vercel's CLI isn't installed and no account is
-  authenticated in this environment - deploying requires the repo owner's own
-  `vercel login` or connecting the GitHub repo via the Vercel dashboard.
-  `whitepaper/vercel.json` (zero-config static site: `cleanUrls`,
-  `trailingSlash: false`) is ready for that; the README's whitepaper link is a
-  literal `YOUR-VERCEL-PROJECT.vercel.app` placeholder with a `TODO` comment,
-  not a guessed real URL - update it once deployed.
-- Stretch UI is the only remaining Day 4 item after this.
+Stretch UI is the only remaining Day 4 item after this.

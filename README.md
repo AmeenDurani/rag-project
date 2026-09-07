@@ -5,8 +5,7 @@ Handbook, built from scratch (no LangChain/LlamaIndex) with an eval harness,
 a FastAPI service layer, structured observability, a hermetic test suite,
 Docker, and CI.
 
-**[Read the technical whitepaper →](https://YOUR-VERCEL-PROJECT.vercel.app)**
-<!-- TODO: replace with the real Vercel URL once whitepaper/ is deployed -->
+**[Read the technical whitepaper →](https://rag-project-tawny.vercel.app/)**
 for the design decisions, the eval-driven chunking iteration story (with real
 before/after metrics), and known limitations. This README covers setup only.
 
