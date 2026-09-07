@@ -18,7 +18,7 @@ Day 1 (full pipeline) and all of Day 2's core milestones are now complete and ve
 
 **Decision made:** accept token-aware chunking as-is (it fixes a real correctness bug regardless of eval-number movement) and move on to Day 3 rather than chase the list-fragmentation issue now. That issue, and the corpus-expansion alternative, are documented for whenever chunking strategy gets revisited (see "Making this project better" in `PROJECT_PLAN.md`).
 
-**Day 3, first piece done.** FastAPI service layer (`add-fastapi-service-layer.md`) - `/ingest` (file upload, persists to `data/`), `/query`, `/health` under `src/api/`. Config (pydantic-settings, fail-fast on missing keys) was already done back on Day 1. Unit tests and logging/tracing still open.
+**Day 3, two of three pieces done.** FastAPI service layer (`add-fastapi-service-layer.md`) - `/ingest` (file upload, persists to `data/`), `/query`, `/health` under `src/api/`. Config (pydantic-settings, fail-fast on missing keys) was already done back on Day 1. Unit test suite (`add-unit-test-suite.md`) - 23 hermetic tests, no real API calls or model downloads, ~2s runtime. Logging/tracing still open.
 
 ## Entries
 
@@ -35,3 +35,4 @@ Day 1 (full pipeline) and all of Day 2's core milestones are now complete and ve
 - [`token-aware-chunking-and-truncation-fix.md`](token-aware-chunking-and-truncation-fix.md) — found and fixed a silent embedding-truncation bug (word-based chunks were ~35% over the model's 512-token limit); rejected page-level chunking after checking real per-page token counts; implemented and promoted token-aware chunking, closing out milestone 4
 - [`fix-judge-thinking-token-budget-bug.md`](fix-judge-thinking-token-budget-bug.md) — fixed an eval-harness bug where Claude Sonnet 5's default adaptive thinking could consume the judge call's entire max_tokens budget, leaving no room for the JSON answer
 - [`add-fastapi-service-layer.md`](add-fastapi-service-layer.md) — first Day 3 piece: FastAPI app (`/ingest`, `/query`, `/health`) under `src/api/`, composition-root dependency lifecycle, error mapping to 404/502, verified end-to-end via TestClient against live Pinecone/Anthropic
+- [`add-unit-test-suite.md`](add-unit-test-suite.md) — 23 hermetic unit tests (chunking, batch embedding, mocked PineconeStore, fake VectorStore, generation, all three API endpoints); refactored chunk_documents() to accept an injectable tokenizer; fixed a test-hermeticity gap in fail-fast config loading

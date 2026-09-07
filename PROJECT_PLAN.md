@@ -59,10 +59,10 @@ Goal: build a naive RAG pipeline, understand it deeply, then turn it into an ind
 
 - [x] FastAPI: `/ingest`, `/query`, `/health` with pydantic schemas and error handling
 - [ ] Logging/tracing: per-stage latency (embed/retrieve/generate), token usage & cost per request, request IDs
-- [ ] Unit tests: chunking, batch embedding, vector store interface (mocked), API endpoints via `TestClient`
-- [ ] Config: `pydantic-settings` for all env vars, fail-fast on missing keys
+- [x] Unit tests: chunking, batch embedding, vector store interface (mocked), API endpoints via `TestClient`
+- [x] Config: `pydantic-settings` for all env vars, fail-fast on missing keys (done back on Day 1 - `src/config.py`)
 
-**Milestone:** runnable API with per-request logs/metrics and test coverage on core logic. **Status: in progress.** FastAPI service layer - see `progress/add-fastapi-service-layer.md` for the design decisions (file layout, upload-vs-CLI-trigger ingest semantics, upload persistence, health-check depth, error-code mapping) and end-to-end verification against live Pinecone/Anthropic.
+**Milestone:** runnable API with per-request logs/metrics and test coverage on core logic. **Status: in progress.** FastAPI service layer - see `progress/add-fastapi-service-layer.md` for the design decisions (file layout, upload-vs-CLI-trigger ingest semantics, upload persistence, health-check depth, error-code mapping) and end-to-end verification against live Pinecone/Anthropic. Unit test suite - see `progress/add-unit-test-suite.md` (23 hermetic tests, ~2s runtime, no real API calls or model downloads; refactored `chunk_documents()` to accept an injectable tokenizer along the way).
 
 ## Day 4 — Containerize, CI, document, stretch UI
 

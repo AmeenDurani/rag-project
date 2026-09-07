@@ -31,7 +31,9 @@ def load_documents() -> list:
 
     return documents
 
-def chunk_documents(pages, source, *, chunk_size: int = 400, overlap: int = 40) -> list:
+def chunk_documents(
+    pages, source, *, chunk_size: int = 400, overlap: int = 40, tokenizer: Tokenizer | None = None
+) -> list:
     """Split page text into overlapping chunks sized in the embedding model's
     own tokens, not words.
 
@@ -45,11 +47,16 @@ def chunk_documents(pages, source, *, chunk_size: int = 400, overlap: int = 40) 
     Counting with the same tokenizer fastembed uses for the real embedding
     call is what actually determines whether a chunk gets truncated.
 
-    Chunking runs against a clone of the embedding model's tokenizer (via
-    to_str/from_str - in-memory, no re-download) with truncation disabled,
-    since the whole document is longer than 512 tokens; the shared singleton
-    used for real embedding calls is never touched. [CLS]/[SEP] are excluded
-    from the token count/window since the embedding call adds its own.
+    `tokenizer` defaults to the real embedding model's tokenizer
+    (get_tokenizer()) when not given - same store-injection pattern as
+    retrieve() takes `store` as a parameter, so tests can pass a small fake
+    tokenizer instead of loading the real (slow, network-dependent) model.
+
+    Chunking runs against a clone of the given tokenizer (via to_str/
+    from_str - in-memory, no re-download) with truncation disabled, since
+    the whole document is longer than 512 tokens; the shared singleton used
+    for real embedding calls is never touched. [CLS]/[SEP] are excluded from
+    the token count/window since the embedding call adds its own.
 
     Chunk text is sliced from the original page text by each token's
     character offset rather than decoded from token ids, so chunk text stays
@@ -72,7 +79,8 @@ def chunk_documents(pages, source, *, chunk_size: int = 400, overlap: int = 40) 
                 return page_num
         return page_spans[-1][2]
 
-    working_tokenizer: Tokenizer = Tokenizer.from_str(get_tokenizer().to_str())
+    base_tokenizer = tokenizer if tokenizer is not None else get_tokenizer()
+    working_tokenizer: Tokenizer = Tokenizer.from_str(base_tokenizer.to_str())
     working_tokenizer.no_truncation()
     encoding = working_tokenizer.encode(full_text)
 
