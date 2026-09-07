@@ -35,3 +35,16 @@ def embed_chunks(chunks: list[Chunk], batch_size: int = 32) -> list[Chunk]:
 
 def embed_query(text: str) -> list[float]:
     return embed_texts([text])[0]
+
+
+def get_tokenizer():
+    """Return the tokenizer already loaded inside the embedding model.
+
+    Callers that need to count tokens (e.g. chunking) should use this rather
+    than loading a tokenizer independently, so the count matches exactly what
+    the embedding call itself sees - that's what actually determines
+    truncation. Reaches into a private fastembed attribute path
+    (model.model.tokenizer); if a fastembed upgrade breaks this, this is the
+    one place to fix it.
+    """
+    return _get_model().model.tokenizer

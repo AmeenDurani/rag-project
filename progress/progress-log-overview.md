@@ -10,15 +10,15 @@ None currently. Both API keys are in place as of `first-live-run-and-baseline-re
 
 ## Where things stand
 
-Day 1 (full pipeline) and Day 2 milestones 1–3 (eval Q&A set, retrieval metrics, LLM-judge answer-quality eval) are now verified end-to-end, not just code-complete — see `first-live-run-and-baseline-results.md` for the real baseline numbers (recall@5 = 1.0, MRR = 0.863, faithfulness/relevance/scope accuracy all 1.0, spot-checked by hand rather than trusted blindly).
+Day 1 (full pipeline) and all of Day 2's core milestones are now complete and verified end-to-end, not just code-complete.
 
-That perfect baseline turned out to be a ceiling effect, not a real signal: only 16 total chunks existed, so `top_k=5` retrieved 31% of the entire corpus every query. Ran a diagnostic experiment (`experiment-smaller-chunk-size.md`) testing whether shrinking chunk size alone (still word-based, not yet token-aware) would fix that - it does make recall@k discriminate again, but the *direction* was a slight regression, not an improvement, with two specific, individually-diagnosed failures (one content-dilution case, one list-fragmentation case that recall@k couldn't see but the answer-quality eval caught).
+`first-live-run-and-baseline-results.md` has the original baseline numbers (recall@5 = 1.0, MRR = 0.863, faithfulness/relevance/scope accuracy all 1.0). That perfect baseline turned out to be a ceiling effect, not a real signal: only 16 total chunks existed, so `top_k=5` retrieved 31% of the entire corpus every query. `experiment-smaller-chunk-size.md` tested shrinking chunk size alone (still word-based) and found a slight regression with two individually-diagnosed failures, one of them a list fragmented across a chunk boundary.
 
-**Next up (milestone 4, still open) — two undecided questions to resume with:**
-1. Does an actual token-aware tokenizer swap (still not done - the smaller-chunk experiment used the existing word-based chunker at a different size) behave differently than the naive size reduction did?
-2. Is corpus expansion (still not tried) the more fundamental fix, or is a smarter chunking *strategy* (e.g. one that doesn't split a numbered list across a chunk boundary, which is what broke q08 in the experiment) the better lever?
+`token-aware-chunking-and-truncation-fix.md` closes out milestone 4. Before tuning chunk size, checked whether word-count chunking was even measuring the right thing - it wasn't: chunks averaged ~700 real tokens against the embedding model's hard 512-token limit, so every chunk was silently truncated at embedding time (retrieval never saw roughly the last third of each chunk's text). Considered and rejected page-level chunking (55% of pages exceed 512 tokens on their own, so it isn't viable standalone on this corpus). Implemented token-based chunking instead (400 tokens/40 overlap, offset-sliced text, tokenizer reused from the embedding model itself) and promoted it to the `default` namespace. Eval numbers moved flat-to-slightly-down on this corpus (same ceiling-effect-unmasking pattern as the chunk-size experiment, not a quality drop), but a sharper finding emerged: three answerable questions now fail scope accuracy, and all three ground-truth to the same two pages (15-16), where a process-category list/diagram gets split across a chunk boundary every chunking scheme tried so far has cut through in roughly the same place. That's stronger evidence for "chunking *strategy* is the real lever" than corpus size, though neither has been tried yet.
 
-Both are open; nothing has been decided about which to pursue first.
+**Decision made:** accept token-aware chunking as-is (it fixes a real correctness bug regardless of eval-number movement) and move on to Day 3 rather than chase the list-fragmentation issue now. That issue, and the corpus-expansion alternative, are documented for whenever chunking strategy gets revisited (see "Making this project better" in `PROJECT_PLAN.md`).
+
+**Next up: Day 3** - FastAPI service layer, logging/tracing, unit tests. Nothing started yet.
 
 ## Entries
 
@@ -32,3 +32,4 @@ Both are open; nothing has been decided about which to pursue first.
 - [`add-answer-quality-eval.md`](add-answer-quality-eval.md) — LLM-as-judge faithfulness/relevance/scope-handling eval, binary pass/fail scoring
 - [`first-live-run-and-baseline-results.md`](first-live-run-and-baseline-results.md) — first real run against live Pinecone/Anthropic; baseline recall@k/MRR and answer-quality numbers, spot-checked
 - [`experiment-smaller-chunk-size.md`](experiment-smaller-chunk-size.md) — diagnosed the baseline's ceiling effect (16 total chunks); tested a smaller chunk size in an isolated namespace, found a regression with two specific diagnosed failures
+- [`token-aware-chunking-and-truncation-fix.md`](token-aware-chunking-and-truncation-fix.md) — found and fixed a silent embedding-truncation bug (word-based chunks were ~35% over the model's 512-token limit); rejected page-level chunking after checking real per-page token counts; implemented and promoted token-aware chunking, closing out milestone 4
