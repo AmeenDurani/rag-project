@@ -42,7 +42,7 @@ Goal: build a naive RAG pipeline, understand it deeply, then turn it into an ind
 - [x] Generation: prompt template (system + retrieved context + question) → Claude Sonnet 5 → answer with cited sources
 - [x] Wire it together: simple CLI (`ingest`, `ask`)
 
-**Milestone:** working naive RAG, queryable from the CLI. **Status: code-complete, unverified end-to-end** — blocked on real Pinecone + Anthropic API keys to actually run it. See `progress/` for the full build log.
+**Milestone:** working naive RAG, queryable from the CLI. **Status: verified end-to-end** — ingest and ask both run successfully against live Pinecone + Anthropic. See `progress/first-live-run-and-baseline-results.md`.
 
 ## Day 2 — Prove it works, then improve it
 
@@ -53,7 +53,7 @@ Goal: build a naive RAG pipeline, understand it deeply, then turn it into an ind
 - [ ] Upgrade chunking to token-aware (real tokenizer, not word count), tune chunk size/overlap using the baseline, re-run eval
 - [ ] Stretch: citations in the answer (page/source per claim)
 
-**Milestone:** quantified retrieval/answer quality with a documented before/after improvement. **Status: eval harness code-complete, unverified end-to-end** — same blocker as Day 1, plus the harness needs a real `baseline` run before milestone 4 (chunking upgrade) has anything to tune against or compare to. See `progress/` for the full build log; stopped here for this session, resuming with milestone 4 next.
+**Milestone:** quantified retrieval/answer quality with a documented before/after improvement. **Status: baseline verified end-to-end.** Real `baseline` numbers: recall@1=0.778, recall@3=0.944, recall@5=1.0, MRR=0.863; faithfulness/relevance/scope accuracy all 1.0 (spot-checked by hand, not taken on faith - see `progress/first-live-run-and-baseline-results.md`). Milestone 4 (chunking upgrade) is next, to be compared against this baseline.
 
 ## Day 3 — Service layer + observability + tests
 

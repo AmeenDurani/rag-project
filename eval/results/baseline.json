@@ -1,0 +1,825 @@
+{
+  "summary": {
+    "num_questions": 18,
+    "recall@1": 0.7777777777777778,
+    "recall@3": 0.9444444444444444,
+    "recall@5": 1.0,
+    "mrr": 0.8629629629629629
+  },
+  "per_question": [
+    {
+      "id": "q01",
+      "question": "What is the purpose of the NASA Systems Engineering Handbook?",
+      "relevant_pages": [
+        11
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 8,
+          "page_start": 10,
+          "page_end": 13,
+          "score": 0.904329836
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 9,
+          "page_start": 13,
+          "page_end": 14,
+          "score": 0.848948956
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 6,
+          "page_start": 8,
+          "page_end": 9,
+          "score": 0.838934124
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.764265478
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 0,
+          "page_start": 1,
+          "page_end": 3,
+          "score": 0.734799802
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "question": "What document should this handbook be used as a companion to?",
+      "relevant_pages": [
+        11
+      ],
+      "first_hit_rank": 2,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 2,
+          "page_start": 4,
+          "page_end": 5,
+          "score": 0.678074598
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 7,
+          "page_start": 8,
+          "page_end": 11,
+          "score": 0.639148235
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 8,
+          "page_start": 10,
+          "page_end": 13,
+          "score": 0.636955857
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 4,
+          "page_start": 5,
+          "page_end": 7,
+          "score": 0.610816598
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.593738317
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "question": "Do all NASA projects follow all 17 SE processes, or does something else vary by project size and complexity?",
+      "relevant_pages": [
+        12
+      ],
+      "first_hit_rank": 5,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.796609223
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.770621717
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.73191607
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.72868973
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 8,
+          "page_start": 10,
+          "page_end": 13,
+          "score": 0.726275921
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "question": "How does NASA define 'systems engineering'?",
+      "relevant_pages": [
+        13
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 9,
+          "page_start": 13,
+          "page_end": 14,
+          "score": 0.912875
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 6,
+          "page_start": 8,
+          "page_end": 9,
+          "score": 0.837689579
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 8,
+          "page_start": 10,
+          "page_end": 13,
+          "score": 0.837095618
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.800533414
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 10,
+          "page_start": 14,
+          "page_end": 15,
+          "score": 0.785245657
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "question": "According to the handbook, what is a 'system'?",
+      "relevant_pages": [
+        13
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 9,
+          "page_start": 13,
+          "page_end": 14,
+          "score": 0.735178113
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 8,
+          "page_start": 10,
+          "page_end": 13,
+          "score": 0.700771928
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 6,
+          "page_start": 8,
+          "page_end": 9,
+          "score": 0.668275058
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 2,
+          "page_start": 4,
+          "page_end": 5,
+          "score": 0.665511131
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.648442388
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "question": "What are the three sets of common technical processes described in NPR 7123.1?",
+      "relevant_pages": [
+        15
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.812355459
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.708307326
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 4,
+          "page_start": 5,
+          "page_end": 7,
+          "score": 0.70052588
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.688621521
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 2,
+          "page_start": 4,
+          "page_end": 5,
+          "score": 0.682722688
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "question": "Of the 17 common technical processes in NPR 7123.1, which numbered processes represent project execution tasks, and which represent crosscutting tools?",
+      "relevant_pages": [
+        15
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.786650062
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.702854216
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 3,
+          "page_start": 5,
+          "page_end": 5,
+          "score": 0.679376125
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 4,
+          "page_start": 5,
+          "page_end": 7,
+          "score": 0.671549
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.670196593
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "question": "What are the four System Design Processes in the SE engine?",
+      "relevant_pages": [
+        15,
+        16
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.776414096
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.770415485
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.74433738
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.734751225
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.731481731
+        }
+      ]
+    },
+    {
+      "id": "q09",
+      "question": "What are the five Product Realization Processes in the SE engine?",
+      "relevant_pages": [
+        15,
+        16
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.774157465
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.770297468
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.767232597
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.73281306
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.730596364
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "question": "What are the eight Technical Management Processes in the SE engine?",
+      "relevant_pages": [
+        15,
+        16
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.805396199
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.756113946
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.747028
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.737108946
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.704956412
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "question": "Per NPR 7123.1, what is the difference between applying an SE process 'iteratively' versus 'recursively'?",
+      "relevant_pages": [
+        17
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.701647222
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.649409
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.618371546
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 15,
+          "page_start": 20,
+          "page_end": 20,
+          "score": 0.609071076
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.608932197
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "question": "What is AS9100, and why is it referenced in this handbook?",
+      "relevant_pages": [
+        17
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.678765237
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 2,
+          "page_start": 4,
+          "page_end": 5,
+          "score": 0.655835867
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.640056729
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 8,
+          "page_start": 10,
+          "page_end": 13,
+          "score": 0.637925386
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.62797153
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "question": "How many times does the SE engine cycle through the technical development processes (steps 1-9) across the project life cycle, and how many times does it cycle through the technical management processes (steps 10-17)?",
+      "relevant_pages": [
+        19
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.791024566
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.768972
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.763549864
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.724818647
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 4,
+          "page_start": 5,
+          "page_end": 7,
+          "score": 0.708194256
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "question": "List the seven phases of the NASA project life cycle, from Pre-Phase A through Phase F.",
+      "relevant_pages": [
+        18,
+        19
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.790442467
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 4,
+          "page_start": 5,
+          "page_end": 7,
+          "score": 0.735107481
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.729183733
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 11,
+          "page_start": 14,
+          "page_end": 16,
+          "score": 0.698855042
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 2,
+          "page_start": 4,
+          "page_end": 5,
+          "score": 0.683354497
+        }
+      ]
+    },
+    {
+      "id": "q15",
+      "question": "What is the purpose of Pre-Phase A: Concept Studies?",
+      "relevant_pages": [
+        19
+      ],
+      "first_hit_rank": 2,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 15,
+          "page_start": 20,
+          "page_end": 20,
+          "score": 0.72125572
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.720803499
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.669937789
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 5,
+          "page_start": 7,
+          "page_end": 8,
+          "score": 0.644568682
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.637257874
+        }
+      ]
+    },
+    {
+      "id": "q16",
+      "question": "What is the typical outcome of Phase F: Closeout, and what does that phase involve?",
+      "relevant_pages": [
+        19
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.716549695
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 5,
+          "page_start": 7,
+          "page_end": 8,
+          "score": 0.712129116
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 1,
+          "page_start": 3,
+          "page_end": 4,
+          "score": 0.694624424
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 15,
+          "page_start": 20,
+          "page_end": 20,
+          "score": 0.667115211
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.637102306
+        }
+      ]
+    },
+    {
+      "id": "q17",
+      "question": "During Phase D, which side of the SE engine is used, and what activities does it perform?",
+      "relevant_pages": [
+        20
+      ],
+      "first_hit_rank": 3,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.725633562
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 5,
+          "page_start": 7,
+          "page_end": 8,
+          "score": 0.71884048
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.708094299
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 0,
+          "page_start": 1,
+          "page_end": 3,
+          "score": 0.70244956
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 15,
+          "page_start": 20,
+          "page_end": 20,
+          "score": 0.673515439
+        }
+      ]
+    },
+    {
+      "id": "q18",
+      "question": "What is a Concept of Operations (ConOps), and in which project phase is it first developed?",
+      "relevant_pages": [
+        20
+      ],
+      "first_hit_rank": 1,
+      "retrieved": [
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 15,
+          "page_start": 20,
+          "page_end": 20,
+          "score": 0.727674186
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 14,
+          "page_start": 19,
+          "page_end": 20,
+          "score": 0.663028717
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 5,
+          "page_start": 7,
+          "page_end": 8,
+          "score": 0.643214524
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 13,
+          "page_start": 17,
+          "page_end": 19,
+          "score": 0.626465499
+        },
+        {
+          "source": "nasa_systems_engineering_handbook_small.pdf",
+          "chunk_id": 12,
+          "page_start": 16,
+          "page_end": 17,
+          "score": 0.622853041
+        }
+      ]
+    }
+  ]
+}

@@ -18,8 +18,8 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
-# Eval / experiment outputs
-eval_results/
+# Eval / experiment outputs - eval/results/*.json is intentionally NOT
+# ignored, it's committed to preserve the before/after comparison trail
 *.log
 
 # OS

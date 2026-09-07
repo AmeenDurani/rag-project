@@ -4,18 +4,15 @@ A running build log for this project (see `../PROJECT_PLAN.md` for the 4-day pla
 
 Each entry covers: what changed, why, and any decisions/trade-offs made along the way. This captures *process* — refactors, bugs found and fixed, design decisions and alternatives considered — not just a final feature list.
 
-## Open blockers (action needed from the project owner)
+## Open blockers
 
-- [ ] **Get a Pinecone API key** (free tier is fine) — needed for `PINECONE_API_KEY` in `.env`.
-- [ ] **Get an Anthropic API key** — needed for `ANTHROPIC_API_KEY` in `.env`.
+None currently. Both API keys are in place as of `first-live-run-and-baseline-results.md` — the pipeline and eval harness have run against real Pinecone/Anthropic for the first time.
 
-Without both, nothing past Day 1's code can be verified end-to-end — see `wire-cli-and-fix-config-consistency.md` for what's blocked on this. This now also blocks Day 2's eval harness: `python -m eval.run_retrieval_eval` and `python -m eval.run_answer_eval` are both code-complete but have never actually been run, so there is no real `baseline` results file yet.
+## Where things stand
 
-## Where things stand (stopping point, end of this session)
+Day 1 (full pipeline) and Day 2 milestones 1–3 (eval Q&A set, retrieval metrics, LLM-judge answer-quality eval) are now verified end-to-end, not just code-complete — see `first-live-run-and-baseline-results.md` for the real baseline numbers (recall@5 = 1.0, MRR = 0.863, faithfulness/relevance/scope accuracy all 1.0, spot-checked by hand rather than trusted blindly).
 
-Day 2 milestones 1–3 (eval Q&A set, retrieval metrics, LLM-judge answer-quality eval) are code-complete per `add-page-provenance-to-chunks.md`, `add-retrieval-metrics-eval.md`, and `add-answer-quality-eval.md` below. All verified only offline (synthetic data, no live API calls) — nothing has touched real Pinecone/Anthropic yet.
-
-**Next up (milestone 4):** upgrade `chunk_documents()` to a real tokenizer (fastembed's own, per the earlier design decision) instead of word-count chunking, then tune chunk size/overlap using a real `baseline` eval run and re-run to produce the before/after comparison the README needs. This can't produce a *meaningful* before/after until the API-key blocker above is resolved and a real baseline run exists — there's a live open question (not yet decided) of whether to unblock the API keys now versus continuing to build milestone 4's code unverified, same as everything so far.
+**Next up (milestone 4):** upgrade `chunk_documents()` to a real tokenizer (fastembed's own, per the earlier design decision) instead of word-count chunking, then tune chunk size/overlap against the `baseline` results and re-run both eval scripts under a new `--label` to produce the before/after comparison the README needs.
 
 ## Entries
 
@@ -27,3 +24,4 @@ Day 2 milestones 1–3 (eval Q&A set, retrieval metrics, LLM-judge answer-qualit
 - [`add-page-provenance-to-chunks.md`](add-page-provenance-to-chunks.md) — Chunk/RetrievedChunk gained page_start/page_end, needed for page-level eval ground truth
 - [`add-retrieval-metrics-eval.md`](add-retrieval-metrics-eval.md) — recall@k/MRR scoring against the eval set, composition-root runner
 - [`add-answer-quality-eval.md`](add-answer-quality-eval.md) — LLM-as-judge faithfulness/relevance/scope-handling eval, binary pass/fail scoring
+- [`first-live-run-and-baseline-results.md`](first-live-run-and-baseline-results.md) — first real run against live Pinecone/Anthropic; baseline recall@k/MRR and answer-quality numbers, spot-checked
