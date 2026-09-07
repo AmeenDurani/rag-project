@@ -77,6 +77,11 @@ def judge_answer(
     response = client.messages.create(
         model=model,
         max_tokens=max_tokens,
+        # Sonnet 5 runs adaptive thinking on by default, and thinking tokens
+        # count against max_tokens - with a small max_tokens for this
+        # classification-only call, the model could occasionally spend the
+        # whole budget thinking and leave no room for the JSON text output.
+        thinking={"type": "disabled"},
         system=JUDGE_SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_message}],
     )
