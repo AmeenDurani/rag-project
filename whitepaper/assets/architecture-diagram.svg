@@ -1,0 +1,73 @@
+<svg viewBox="0 0 940 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram: ingest path runs PDF corpus through chunking and embedding into Pinecone; query path embeds the question, retrieves from Pinecone, and generates a cited answer with Claude Sonnet 5.">
+  <defs>
+    <marker id="arrow-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2a78d6"/>
+    </marker>
+    <marker id="arrow-muted" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#898781"/>
+    </marker>
+  </defs>
+
+  <style>
+    .box { fill: #fcfcfb; stroke: rgba(11,11,11,0.14); stroke-width: 1; }
+    .box-accent { stroke: #2a78d6; stroke-width: 1.5; }
+    .label { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 13px; fill: #0b0b0b; }
+    .sublabel { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 10.5px; fill: #52514e; }
+    .lane-label { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 11px; fill: #898781; text-transform: uppercase; letter-spacing: 0.04em; }
+    .edge-accent { stroke: #2a78d6; stroke-width: 1.5; fill: none; }
+    .edge-muted { stroke: #898781; stroke-width: 1.5; fill: none; }
+  </style>
+
+  <!-- Ingest lane (de-emphasized: runs once per corpus change, not per request) -->
+  <text x="20" y="16" class="lane-label">Ingest — CLI `main.py ingest` or API `POST /ingest`</text>
+
+  <rect x="20" y="26" width="130" height="60" rx="8" class="box"/>
+  <text x="85" y="52" text-anchor="middle" class="label">PDF corpus</text>
+  <text x="85" y="68" text-anchor="middle" class="sublabel">data/*.pdf</text>
+
+  <path d="M150,56 L168,56" class="edge-muted" marker-end="url(#arrow-muted)"/>
+
+  <rect x="170" y="26" width="170" height="60" rx="8" class="box"/>
+  <text x="255" y="48" text-anchor="middle" class="label">Chunk</text>
+  <text x="255" y="64" text-anchor="middle" class="sublabel">token-aware, 400/40 tok</text>
+
+  <path d="M340,56 L358,56" class="edge-muted" marker-end="url(#arrow-muted)"/>
+
+  <rect x="360" y="26" width="150" height="60" rx="8" class="box"/>
+  <text x="435" y="48" text-anchor="middle" class="label">Embed</text>
+  <text x="435" y="64" text-anchor="middle" class="sublabel">fastembed, bge-small</text>
+
+  <path d="M435,86 L423,136" class="edge-muted" marker-end="url(#arrow-muted)"/>
+
+  <!-- Query lane (accent: the live request path FastAPI actually serves) -->
+  <text x="20" y="132" class="lane-label">Query — CLI `main.py ask` or API `POST /query`</text>
+
+  <rect x="20" y="142" width="130" height="76" rx="8" class="box"/>
+  <text x="85" y="176" text-anchor="middle" class="label">Question</text>
+  <text x="85" y="192" text-anchor="middle" class="sublabel">user input</text>
+
+  <path d="M150,180 L168,180" class="edge-accent" marker-end="url(#arrow-accent)"/>
+
+  <rect x="170" y="142" width="140" height="76" rx="8" class="box"/>
+  <text x="240" y="176" text-anchor="middle" class="label">Embed query</text>
+  <text x="240" y="192" text-anchor="middle" class="sublabel">same model</text>
+
+  <path d="M310,180 L328,180" class="edge-accent" marker-end="url(#arrow-accent)"/>
+
+  <rect x="330" y="132" width="170" height="96" rx="8" class="box box-accent"/>
+  <text x="415" y="172" text-anchor="middle" class="label">Pinecone</text>
+  <text x="415" y="188" text-anchor="middle" class="sublabel">serverless vector store</text>
+  <text x="415" y="202" text-anchor="middle" class="sublabel">cosine · top-k similarity</text>
+
+  <path d="M500,180 L518,180" class="edge-accent" marker-end="url(#arrow-accent)"/>
+
+  <rect x="520" y="142" width="160" height="76" rx="8" class="box"/>
+  <text x="600" y="176" text-anchor="middle" class="label">Claude Sonnet 5</text>
+  <text x="600" y="192" text-anchor="middle" class="sublabel">generate, cited answer</text>
+
+  <path d="M680,180 L698,180" class="edge-accent" marker-end="url(#arrow-accent)"/>
+
+  <rect x="700" y="142" width="150" height="76" rx="8" class="box box-accent"/>
+  <text x="775" y="176" text-anchor="middle" class="label">Answer</text>
+  <text x="775" y="192" text-anchor="middle" class="sublabel">+ ranked sources</text>
+</svg>

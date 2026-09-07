@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>rag-project — Technical Whitepaper</title>
+  <meta name="description" content="Design decisions and eval-driven iteration behind a from-scratch RAG pipeline over the NASA Systems Engineering Handbook.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="toc" aria-label="Table of contents">
+      <div class="toc-title">Contents</div>
+      <ol>
+        <li><a href="#summary">Executive summary</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#design-decisions">Design decisions</a></li>
+        <li><a href="#chunking-story">The chunking iteration story</a></li>
+        <li><a href="#retrieval-generation">Retrieval &amp; generation</a></li>
+        <li><a href="#observability">Observability</a></li>
+        <li><a href="#testing-deployment">Testing, CI &amp; deployment</a></li>
+        <li><a href="#limitations-roadmap">Limitations &amp; roadmap</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="kicker">Technical whitepaper</div>
+        <h1>A from-scratch RAG pipeline, and the eval iteration that shaped it</h1>
+        <p class="dek">
+          Retrieval-augmented generation over the NASA Systems Engineering Handbook —
+          built without LangChain/LlamaIndex specifically to be able to defend every
+          design choice below, not just cite a framework default.
+        </p>
+        <div class="badges">
+          <a class="badge" href="https://github.com/AmeenDurani/rag-project">GitHub repository ↗</a>
+          <a class="badge" href="https://github.com/AmeenDurani/rag-project/actions">CI: lint + pytest ↗</a>
+          <a class="badge" href="#chunking-story">Jump to the eval story ↓</a>
+        </div>
+      </header>
+
+      <section id="summary">
+        <div class="section-kicker">01</div>
+        <h2>Executive summary</h2>
+        <p class="lede">
+          A RAG pipeline (ingest → chunk → embed → store → retrieve → generate) built
+          from scratch over a 4-day sprint, then hardened with an eval harness, a
+          FastAPI service layer, structured observability, a hermetic test suite,
+          Docker, and CI — the parts of "production-shaped" that separate a working
+          demo from something worth putting on a resume.
+        </p>
+        <p>
+          The single most important thing this project produced isn't a number — it's
+          a documented, evidence-backed <em>iteration</em>: an eval run that looked
+          perfect turned out to be measuring the wrong thing (a ceiling effect from a
+          16-chunk corpus); chasing that led to finding a real correctness bug (silent
+          embedding truncation from word-based chunk sizing); fixing that bug surfaced
+          a new, precisely diagnosed failure mode (a process list fragmented across a
+          chunk boundary on pages 15–16). Each step is backed by the actual retrieved
+          chunks and judge verdicts, not just an aggregate score — see
+          <a href="#chunking-story">the chunking iteration story</a> for the full
+          walkthrough.
+        </p>
+        <table>
+          <caption>Headline numbers, current (token-aware) configuration — 22 questions, NASA SE Handbook corpus</caption>
+          <thead>
+            <tr><th>Metric</th><th>Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Recall@5 (18 answerable questions)</td><td>0.944</td></tr>
+            <tr><td>MRR</td><td>0.801</td></tr>
+            <tr><td>Faithfulness</td><td>1.0</td></tr>
+            <tr><td>Relevance</td><td>1.0</td></tr>
+            <tr><td>Scope accuracy (answerable + out-of-scope)</td><td>0.864</td></tr>
+            <tr><td>Unit tests (hermetic, no live calls)</td><td>23 passing, ~2s</td></tr>
+          </tbody>
+        </table>
+        <p>
+          What this is <strong>not</strong>: a benchmark result. 22 questions over one
+          ~8,000-word PDF is a smoke test with a real, documented failure mode still
+          open (see <a href="#limitations-roadmap">limitations</a>) — stated here
+          rather than left for an interviewer to discover.
+        </p>
+      </section>
+
+      <section id="architecture">
+        <div class="section-kicker">02</div>
+        <h2>Architecture</h2>
+        <p>
+          Two entry points — a Typer CLI (<code>main.py</code>) for local use and a
+          FastAPI service (<code>src/api/</code>) for the production-shaped surface —
+          call the same core modules, each composed at its own composition root
+          rather than duplicating pipeline logic. The query path (bottom, accent
+          color) is what the live service actually serves on every request; the
+          ingest path (top, muted) runs once per corpus change.
+        </p>
+        <div class="diagram-wrap">
+          <img src="assets/architecture-diagram.svg" alt="Ingest path: PDF corpus to Chunk to Embed to Pinecone. Query path: Question to Embed query to Pinecone to Claude Sonnet 5 to Answer with sources.">
+        </div>
+        <h3>Why built from scratch</h3>
+        <p>
+          No LangChain or LlamaIndex. The explicit trade: reimplementing plumbing
+          (chunking, prompt assembly, the vector-store interface) that a framework
+          would give for free, in exchange for being able to explain retrieval,
+          chunking, and prompting from first principles — "the framework handles
+          that" isn't a defensible answer in an interview, and it also would have
+          hidden the truncation bug described below inside a library instead of
+          surfacing it as something this project actually found and fixed.
+        </p>
+      </section>
+
+      <section id="design-decisions">
+        <div class="section-kicker">03</div>
+        <h2>Design decisions</h2>
+        <p>
+          Each choice below names the alternative considered, not just the outcome —
+          the trade-off is the part worth defending, not the tool name.
+        </p>
+
+        <h3>Pinecone, behind a <code>VectorStore</code> interface</h3>
+        <p>
+          Chosen over a local store (FAISS/Chroma) for a serverless free tier with no
+          infra to babysit, and because it's an industry-recognizable name. The
+          <code>VectorStore</code> Protocol keeps the choice swappable in principle —
+          and that's not a decorative abstraction: a hand-written
+          <code>FakeVectorStore</code> already implements the same Protocol purely for
+          hermetic tests, so the interface has a second real implementation, not just
+          the one.
+        </p>
+
+        <h3>Claude Sonnet 5 for generation, Haiku 4.5 as a configurable cheaper swap</h3>
+        <p>
+          The model name lives in <code>src/config.py</code>, never hardcoded at a
+          call site — swapping models (or A/B-ing them) doesn't touch pipeline code.
+        </p>
+
+        <h3>FastAPI: sync <code>def</code> endpoints, not <code>async def</code></h3>
+        <p>
+          Pinecone, Anthropic, and fastembed are all synchronous SDKs. FastAPI
+          auto-dispatches plain <code>def</code> path operations to a threadpool, so
+          sync SDK calls never block the event loop — making the endpoints
+          <code>async def</code> without also swapping in async clients would have
+          been the wrong call for no benefit.
+        </p>
+
+        <h3>Gunicorn managing Uvicorn workers, not a bare Uvicorn process</h3>
+        <p>
+          A single Uvicorn process is one OS process with one GIL: I/O-bound work
+          (waiting on Pinecone/Anthropic) benefits from the threadpool, but CPU-bound
+          work (tokenizing, embedding) still serializes on one core, and a single
+          unhandled crash takes the whole service down. Multiple Gunicorn-managed
+          workers add multi-core use and per-worker crash isolation/auto-restart —
+          single-host (vertical) scaling, a different axis from the horizontal
+          scaling an orchestrator would add (out of scope here). Worker count is
+          env-var configurable (<code>WEB_CONCURRENCY</code>, default 2) rather than a
+          CPU-count formula, since this app's per-request cost is dominated by
+          network wait, not CPU — and each worker loads its own copy of the embedding
+          model into memory, so more workers isn't free.
+        </p>
+
+        <h3>Composition-root dependency wiring, not a global client</h3>
+        <p>
+          Both the CLI and the API build <code>PineconeStore</code>/the Anthropic
+          client once (CLI: at the start of each command; API: once at startup via
+          <code>lifespan</code> + <code>Depends()</code>) and pass them down, rather
+          than constructing them wherever they're used. Rebuilding
+          <code>PineconeStore</code> per call would re-run its index-existence check —
+          a real network call — every time.
+        </p>
+      </section>
+
+      <section id="chunking-story">
+        <div class="section-kicker">04 — centerpiece</div>
+        <h2>The chunking iteration story</h2>
+        <p class="lede">
+          Three chunking configurations were actually run against live Pinecone and
+          Anthropic, each in an isolated namespace so a regression could never
+          contaminate an already-verified result. The numbers moved down, twice — and
+          each time, that was the correct signal.
+        </p>
+
+        <h3>1. The baseline looked perfect — and that was the problem</h3>
+        <p>
+          Word-based chunking, 500 words / 50-word overlap, produced
+          <strong>recall@5 = 1.0, MRR = 0.863, faithfulness/relevance/scope accuracy
+          all 1.0</strong>. The cause: the ~8,000-word corpus produced only
+          <strong>16 chunks total</strong>, so <code>top_k=5</code> retrieved 31% of
+          the entire corpus on every single query. recall@1 (0.778) was the only
+          metric strict enough to still show any spread. A perfect score here meant
+          the eval wasn't discriminating, not that retrieval was flawless.
+        </p>
+
+        <h3>2. Shrinking chunk size alone: a real regression, two distinct causes</h3>
+        <p>
+          Ran a second ingest into an isolated <code>small_chunks</code> namespace at
+          150 words / 15-word overlap (same 10% overlap ratio, so chunk size was the
+          only variable that changed) — 54 chunks instead of 16. Result: recall@5 fell
+          to <strong>0.944</strong>, scope accuracy fell to <strong>0.955</strong>.
+          Two specific, individually diagnosed failures, not just an aggregate dip:
+        </p>
+        <ul>
+          <li>
+            <strong>q12</strong> ("What is AS9100...") hit at rank 1 in the baseline
+            (a chunk spanning pages 17–19) but was <strong>missed entirely in the top
+            5</strong> at the smaller size — a short passage got diluted or split away
+            from the surrounding context that made the larger chunk's embedding a
+            strong match. Smaller isn't strictly more precise; it can dilute a short
+            passage's signal.
+          </li>
+          <li>
+            <strong>q08</strong> ("the four System Design Processes...", pages 15–16)
+            was retrieved at <strong>rank 1</strong> by the recall@k metric — a
+            technical success — but the answer-quality judge caught what recall@k
+            structurally cannot: the four-item list was fragmented across chunk
+            boundaries, no single retrieved chunk contained the complete list, and the
+            model correctly refused to answer. <strong>A page-level hit is necessary
+            but not sufficient for a complete answer</strong> — exactly why this
+            project runs both a retrieval eval and an answer-quality eval, not either
+            alone.
+          </li>
+        </ul>
+
+        <h3>3. Before tuning further: was chunk size even the right thing to tune?</h3>
+        <p>
+          Checked whether word-count chunking was measuring the right unit at all —
+          it wasn't. Counting real tokens with the embedding model's own tokenizer
+          showed 500-word chunks averaged <strong>~700 tokens against the model's
+          hard 512-token limit</strong> — about 35% over. fastembed was silently
+          truncating roughly the last third of every chunk's text before embedding
+          it, on every chunking configuration tested so far, including the "perfect"
+          baseline. This reframes the smaller-chunk regression above: it was never
+          cleanly isolating chunk size as a variable, because the starting point was
+          already broken in a way nobody had checked for.
+        </p>
+        <div class="callout">
+          <span class="callout-label">Alternative considered and rejected</span>
+          Page-level chunking (one chunk per PDF page) was the obvious "just use a
+          natural boundary" fix. Measured before adopting it: <strong>55% of pages in
+          this corpus exceed 512 tokens on their own</strong>. Page-level chunking
+          wouldn't have solved truncation — it would have moved the identical bug to
+          different boundaries.
+        </div>
+
+        <h3>4. The fix: token-aware chunking</h3>
+        <p>
+          Chunks are now counted and sliced using the exact tokenizer fastembed uses
+          internally for the embedding call itself (reached via
+          <code>model.model.tokenizer</code>, a documented private attribute path,
+          flagged as the one place to fix if a fastembed upgrade breaks it) — 400
+          tokens / 40-token overlap, the same 10% ratio as every prior configuration.
+          Chunking runs against a <em>cloned</em> tokenizer instance with truncation
+          disabled (the full document text is longer than any one window), and chunk
+          text is sliced from the original page text using each token's character
+          offset rather than decoded back from token ids — so chunk text stays
+          byte-identical to the source instead of picking up WordPiece decode
+          artifacts. Promoted to the <code>default</code> namespace.
+        </p>
+
+        <div id="chart-retrieval" class="chart-card"></div>
+        <div id="chart-quality" class="chart-card"></div>
+
+        <h3>5. What moved, and why that's not a regression</h3>
+        <p>
+          Recall@5 landed at 0.944, MRR at 0.801, scope accuracy at 0.864 — flat to
+          slightly down again. This is the <em>same</em> ceiling-effect-unmasking
+          pattern as step 2, not a new problem the fix introduced: on a 22-question
+          eval over a corpus this small, real discrimination shows up as movement —
+          the two earlier "perfect" runs were the anomalies, not this one.
+        </p>
+        <p>
+          Scope accuracy is the metric that actually moved (1.0 → 0.864), and the
+          retrieval logs pin down exactly why: three answerable questions — q08, q09,
+          q10, all three ground-truthed to <strong>pages 15–16</strong> — now fail.
+          Across every chunking scheme tried (500/50 word, 150/15 word, 400/40 token),
+          the retrieved chunks for these questions land on adjacent-but-different page
+          spans (3, 14–15, 16–17, 17–18, 20) — never one chunk that cleanly covers the
+          process-category list spanning 15–16. The model faithfully refuses rather
+          than hallucinate in all three cases (<code>faithful: true</code>) — but the
+          refusal is wrong, because the real answer exists in the corpus, just split
+          across a chunk boundary no scheme so far has avoided.
+        </p>
+        <div class="callout">
+          <span class="callout-label">Decision made</span>
+          Accept token-aware chunking as-is: it fixes a real correctness bug
+          regardless of which direction the eval numbers moved. The pages-15–16
+          fragmentation is a distinct, now precisely diagnosed issue — pointing at
+          chunking <em>strategy</em> (structure-aware chunking that respects
+          list/heading boundaries) or corpus expansion as the next lever, not yet
+          pursued. See <a href="#limitations-roadmap">roadmap</a>.
+        </div>
+      </section>
+
+      <section id="retrieval-generation">
+        <div class="section-kicker">05</div>
+        <h2>Retrieval &amp; generation methodology</h2>
+
+        <h3>Retrieval</h3>
+        <p>
+          <code>fastembed</code>'s <code>BAAI/bge-small-en-v1.5</code> (384-dim)
+          embeds both corpus chunks and queries; Pinecone does cosine-similarity
+          top-k. <code>retrieve()</code> takes the <code>VectorStore</code> as a
+          parameter rather than constructing one internally — the same
+          dependency-injection pattern used throughout — so it stays importable and
+          testable without live Pinecone credentials.
+        </p>
+
+        <h3>Generation</h3>
+        <p>
+          The system prompt restricts Claude to the provided context only, instructs
+          it to say "I don't know" rather than reach for outside knowledge, and
+          requires bracketed citations (<code>[1]</code>, <code>[2]</code>) matching
+          the numbered context entries. Sources are returned as structured data
+          (source file, chunk id, page range, similarity score) alongside the answer
+          text, not just as prose — so a caller can render citations programmatically
+          rather than parse them out of the answer.
+        </p>
+
+        <h3>Answer-quality evaluation: LLM-as-judge</h3>
+        <p>
+          Claude Sonnet 5 judges each generated answer on two strict true/false axes —
+          <strong>faithful</strong> (no claim unsupported by the retrieved context; a
+          correct refusal is always faithful) and <strong>relevant</strong> (does it
+          address the question) — plus whether it refused to answer at all. Binary
+          pass/fail rather than a 1–5 scale was a deliberate choice: this eval exists
+          to produce a before/after comparison across chunking configurations, and a
+          finer-grained scale is more prone to run-to-run judge-calibration noise
+          being mistaken for a real quality change.
+        </p>
+        <div class="callout limitation">
+          <span class="callout-label">Named risk: judge self-preference bias</span>
+          Using Claude to both generate the system's answers <em>and</em> judge them
+          is a known self-preference bias risk in LLM-as-judge literature. Current
+          mitigation: judge verdicts were spot-checked by hand against the actual
+          retrieved context and reference answers rather than trusted blindly. Not
+          yet done: a second judge model or a stricter reference-based rubric — named
+          explicitly in the <a href="#limitations-roadmap">roadmap</a>, not glossed
+          over.
+        </div>
+        <p>
+          A real bug the eval harness itself surfaced: Claude Sonnet 5 runs adaptive
+          thinking on by default, and thinking tokens count against
+          <code>max_tokens</code>. The judge's classification-only call used a small
+          budget (<code>max_tokens=256</code>) that could occasionally be consumed
+          entirely by thinking, leaving no room for the JSON verdict. Fixed by
+          disabling thinking explicitly for that call. The same latent bug class
+          exists in <code>generate()</code>'s 1024-token budget — lower risk given the
+          larger budget, flagged rather than silently left alone.
+        </p>
+      </section>
+
+      <section id="observability">
+        <div class="section-kicker">06</div>
+        <h2>Observability</h2>
+        <p>
+          The API emits structured JSON logs — queryable by a real log aggregator, not
+          just human-readable text — a deliberate split from the CLI, which keeps its
+          existing plain-stdout output for a person reading a terminal. A per-request
+          ID is propagated via <code>contextvars</code> and a <code>logging.Filter</code>,
+          so no function signature in the embed → retrieve → generate call chain needs
+          to carry it, and it ties together every log line for a request, including
+          from third-party loggers (<code>pinecone</code>, <code>httpx</code>) that
+          also propagate to the root logger.
+        </p>
+        <p>
+          Per-stage latency and per-request estimated cost are logged directly. A real
+          <code>/query</code> call against live Pinecone/Anthropic logged:
+        </p>
+        <table>
+          <caption>Real logged request, verified end-to-end</caption>
+          <tbody>
+            <tr><td>embed_and_retrieve</td><td>1,612 ms</td></tr>
+            <tr><td>generate</td><td>2,496 ms</td></tr>
+            <tr><td>input tokens / output tokens</td><td>4,239 / 83</td></tr>
+            <tr><td>estimated cost</td><td>$0.0093</td></tr>
+          </tbody>
+        </table>
+        <p>
+          Generation dominates request latency, not retrieval — a real finding worth
+          having before optimizing the wrong stage. Cost is computed from a hardcoded
+          per-model pricing table (dollars per million tokens) for the two models this
+          project actually configures; it returns <code>None</code>, not a guess, for
+          any other model.
+        </p>
+      </section>
+
+      <section id="testing-deployment">
+        <div class="section-kicker">07</div>
+        <h2>Testing, CI &amp; deployment</h2>
+
+        <h3>23 hermetic unit tests</h3>
+        <p>
+          No real API calls, no model downloads, full suite runs in under 2 seconds.
+          Covers chunking edge cases (chunk-size respect, overlap sharing, a
+          redundant-tail guard, page provenance, byte-identical text slicing), batch
+          embedding, <code>PineconeStore</code> against a mocked
+          <code>pinecone.Pinecone</code> client, <code>retrieve()</code>/<code>generate()</code>
+          against a hand-written <code>FakeVectorStore</code>, and all three API
+          endpoints via <code>TestClient</code>. A real hermeticity gap was found and
+          fixed along the way: fail-fast config loading (correct in production) broke
+          test <em>collection</em> in any environment without a real <code>.env</code>
+          — fixed with dummy env-var fallbacks set before any <code>src.*</code>
+          import, verified not to touch a real local <code>.env</code>.
+        </p>
+
+        <h3>CI: two parallel jobs, zero secrets</h3>
+        <p>
+          GitHub Actions runs <code>lint</code> (ruff) and <code>test</code> (pytest)
+          in parallel on every push/PR, with no repository secrets configured — the
+          test suite's hermeticity means it doesn't need any. Verified the exact
+          commands from a completely clean repo copy in a fresh venv, with no real
+          <code>.env</code>, before ever pushing the workflow.
+        </p>
+
+        <h3>Docker: Gunicorn + Uvicorn workers</h3>
+        <p>
+          Single-stage <code>python:3.12-slim</code> build; see
+          <a href="#design-decisions">design decisions</a> for the process-manager
+          rationale. <code>data/</code> (where uploaded PDFs persist) is meant to be
+          mounted as a volume so uploads survive container restarts.
+        </p>
+        <div class="callout limitation">
+          <span class="callout-label">Verification gap, stated plainly</span>
+          Docker itself wasn't installed in the development environment, so
+          <code>docker build</code>/<code>docker run</code> were never exercised
+          directly. What <em>was</em> verified: a clean, non-editable
+          <code>pip install .</code> from the exact file set the Dockerfile copies,
+          and the literal Gunicorn CMD run locally against real Pinecone/Anthropic
+          credentials — two independent worker processes booted, each completed
+          <code>lifespan</code> startup, both served real <code>/health</code>
+          requests. The actual container build is the one piece still unverified.
+        </div>
+      </section>
+
+      <section id="limitations-roadmap">
+        <div class="section-kicker">08</div>
+        <h2>Known limitations &amp; roadmap</h2>
+        <p>
+          Stated in the README/whitepaper deliberately, not left for an interviewer to
+          find first.
+        </p>
+        <ul>
+          <li><strong>Single small corpus</strong> (~8,000 words, 18–54 chunks depending on scheme) — proves the pipeline works, exercises none of the hard problems at scale (incremental re-indexing, dedup, staleness, sharding).</li>
+          <li><strong>Naive-RAG-plus, not advanced RAG</strong> — no hybrid BM25+dense search, no re-ranking, no query rewriting/decomposition.</li>
+          <li><strong>22-question eval set is a smoke test</strong>, not a statistically meaningful benchmark.</li>
+          <li><strong>LLM-as-judge self-preference bias</strong> — partially mitigated (hand spot-checked), not fully (no second judge model, no stricter reference rubric yet).</li>
+          <li><strong>Pages 15–16 chunk-boundary fragmentation</strong> — a known, precisely diagnosed open issue (see the chunking story above), the clearest concrete next lever.</li>
+          <li><strong>"Production-shaped," not production-proven</strong> — no real traffic, no load testing, no live monitoring.</li>
+          <li><strong>Docker build unverified</strong> on the actual Docker CLI — equivalent components verified directly instead (see above).</li>
+        </ul>
+        <h3>Roadmap, in priority order</h3>
+        <ol>
+          <li>Grow the eval set to 75–100+ questions, including more adversarial/ambiguous cases.</li>
+          <li>Mitigate judge bias: report hand-spot-check agreement rate; add a second judge model or a stricter reference-based rubric.</li>
+          <li>Resolve the pages-15–16 fragmentation: try a structure-aware chunker or corpus expansion, whichever the next session's diagnosis favors.</li>
+          <li>Hybrid search (BM25 + dense, reciprocal rank fusion) and re-ranking on top-k candidates.</li>
+          <li>Real deployment with load testing and basic monitoring, beyond a local Docker build.</li>
+        </ol>
+      </section>
+
+      <footer>
+        Built solo as a 4-day (plus refinement) portfolio project. Full build log in
+        <code>progress/</code> of the
+        <a href="https://github.com/AmeenDurani/rag-project">GitHub repository</a>.
+      </footer>
+    </main>
+  </div>
+
+  <script type="module" src="js/init.js"></script>
+  <script>
+    // Highlight the active TOC entry on scroll - progressive enhancement only,
+    // the page is fully readable and navigable without it.
+    const sections = [...document.querySelectorAll("main section[id]")];
+    const links = [...document.querySelectorAll(".toc a")];
+    const byId = Object.fromEntries(links.map((a) => [a.getAttribute("href").slice(1), a]));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const link = byId[entry.target.id];
+          if (!link) return;
+          link.classList.toggle("active", entry.isIntersecting);
+        });
+      },
+      { rootMargin: "-20% 0px -70% 0px" }
+    );
+    sections.forEach((s) => observer.observe(s));
+  </script>
+</body>
+</html>
