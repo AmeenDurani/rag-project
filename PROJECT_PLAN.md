@@ -66,12 +66,12 @@ Goal: build a naive RAG pipeline, understand it deeply, then turn it into an ind
 
 ## Day 4 — Containerize, CI, document, stretch UI
 
-- [ ] Dockerfile for the API (Pinecone stays managed, no local DB container needed)
+- [x] Dockerfile for the API (Pinecone stays managed, no local DB container needed)
 - [ ] GitHub Actions: lint (ruff) + pytest on push/PR
 - [ ] README: architecture diagram, setup steps, eval results table (before/after), a design-decisions section (why Pinecone, why Sonnet 5, why from-scratch, known limitations)
 - [ ] Stretch: Streamlit/Gradio UI — question box, shows retrieved chunks + answer + sources
 
-**Milestone:** containerized, CI-checked, documented project ready to link from a resume.
+**Milestone:** containerized, CI-checked, documented project ready to link from a resume. **Status: in progress.** Dockerfile - see `progress/add-dockerfile.md` (Gunicorn + Uvicorn worker process manager for multi-core scaling, `data/` mounted as a volume so uploaded PDFs persist across restarts; verified the equivalent CMD and a clean non-editable `pip install .` locally, since Docker itself isn't installed on this machine).
 
 ### Cut order if behind schedule
 1. UI (stretch, cut first)
