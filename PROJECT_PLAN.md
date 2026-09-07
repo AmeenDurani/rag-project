@@ -58,11 +58,11 @@ Goal: build a naive RAG pipeline, understand it deeply, then turn it into an ind
 ## Day 3 — Service layer + observability + tests
 
 - [x] FastAPI: `/ingest`, `/query`, `/health` with pydantic schemas and error handling
-- [ ] Logging/tracing: per-stage latency (embed/retrieve/generate), token usage & cost per request, request IDs
+- [x] Logging/tracing: per-stage latency (embed/retrieve/generate), token usage & cost per request, request IDs
 - [x] Unit tests: chunking, batch embedding, vector store interface (mocked), API endpoints via `TestClient`
 - [x] Config: `pydantic-settings` for all env vars, fail-fast on missing keys (done back on Day 1 - `src/config.py`)
 
-**Milestone:** runnable API with per-request logs/metrics and test coverage on core logic. **Status: in progress.** FastAPI service layer - see `progress/add-fastapi-service-layer.md` for the design decisions (file layout, upload-vs-CLI-trigger ingest semantics, upload persistence, health-check depth, error-code mapping) and end-to-end verification against live Pinecone/Anthropic. Unit test suite - see `progress/add-unit-test-suite.md` (23 hermetic tests, ~2s runtime, no real API calls or model downloads; refactored `chunk_documents()` to accept an injectable tokenizer along the way).
+**Milestone:** runnable API with per-request logs/metrics and test coverage on core logic. **Status: complete.** FastAPI service layer - see `progress/add-fastapi-service-layer.md` for the design decisions (file layout, upload-vs-CLI-trigger ingest semantics, upload persistence, health-check depth, error-code mapping) and end-to-end verification against live Pinecone/Anthropic. Unit test suite - see `progress/add-unit-test-suite.md` (23 hermetic tests, ~2s runtime, no real API calls or model downloads; refactored `chunk_documents()` to accept an injectable tokenizer along the way). Logging/tracing - see `progress/add-logging-and-tracing.md` (structured JSON logs, contextvars-based request IDs, per-stage latency, estimated cost per request; verified against live Pinecone/Anthropic, e.g. a real `/query` call logged `stages_ms: {embed_and_retrieve: 1612ms, generate: 2496ms}`, `estimated_cost_usd: 0.0093`).
 
 ## Day 4 — Containerize, CI, document, stretch UI
 

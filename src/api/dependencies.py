@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 import anthropic
 from fastapi import FastAPI, Request
 
+from src.api.observability import configure_logging
 from src.config import settings
 from src.vector_store import PineconeStore
 
@@ -16,6 +17,8 @@ async def lifespan(app: FastAPI):
     single request, mirroring the composition-root pattern main.py already
     uses for the CLI.
     """
+    configure_logging()
+
     app.state.store = PineconeStore(
         api_key=settings.pinecone_api_key,
         index_name=settings.pinecone_index_name,
