@@ -9,15 +9,23 @@ from src.embeddings import get_tokenizer
 PAGE_SEPARATOR = "\n\n"
 
 
+def extract_pages(path: Path) -> list[str]:
+    """Extract per-page text from a PDF at `path`.
+
+    Split out of load_documents() so the API's upload endpoint can extract
+    pages from a saved upload the same way the CLI does from data/, without
+    duplicating the PdfReader call.
+    """
+    reader = PdfReader(path)
+    return [page.extract_text() for page in reader.pages]
+
+
 def load_documents() -> list:
     documents = []
 
     for path in Path("data").glob("*.pdf"):
-        reader = PdfReader(path)
-        pages = [page.extract_text() for page in reader.pages]
-
         documents.append({
-            "pages" : pages,
+            "pages" : extract_pages(path),
             "source" : path.name
         })
 

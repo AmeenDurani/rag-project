@@ -10,6 +10,9 @@ dependencies = [
     "pinecone>=5.4",
     "pydantic-settings>=2.6",
     "typer>=0.15",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+    "python-multipart>=0.0.12",
 ]
 
 [project.optional-dependencies]
@@ -17,8 +20,6 @@ dev = [
     "pytest>=8.3",
     "pytest-mock>=3.14",
     "ruff>=0.8",
-    "fastapi>=0.115",
-    "uvicorn>=0.32",
     "httpx>=0.28",
 ]
 
@@ -32,6 +33,11 @@ include = ["src*"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's Depends()/Query()/Body() in argument defaults is the required DI
+# pattern, not the mutable-default-argument bug B008 exists to catch.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Body"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
