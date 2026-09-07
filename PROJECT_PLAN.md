@@ -53,7 +53,7 @@ Goal: build a naive RAG pipeline, understand it deeply, then turn it into an ind
 - [ ] Upgrade chunking to token-aware (real tokenizer, not word count), tune chunk size/overlap using the baseline, re-run eval
 - [ ] Stretch: citations in the answer (page/source per claim)
 
-**Milestone:** quantified retrieval/answer quality with a documented before/after improvement. **Status: baseline verified end-to-end.** Real `baseline` numbers: recall@1=0.778, recall@3=0.944, recall@5=1.0, MRR=0.863; faithfulness/relevance/scope accuracy all 1.0 (spot-checked by hand, not taken on faith - see `progress/first-live-run-and-baseline-results.md`). Milestone 4 (chunking upgrade) is next, to be compared against this baseline.
+**Milestone:** quantified retrieval/answer quality with a documented before/after improvement. **Status: baseline verified end-to-end, milestone 4 in progress.** Real `baseline` numbers: recall@1=0.778, recall@3=0.944, recall@5=1.0, MRR=0.863; faithfulness/relevance/scope accuracy all 1.0 (spot-checked by hand, not taken on faith - see `progress/first-live-run-and-baseline-results.md`). The perfect baseline turned out to be a ceiling effect (only 16 total chunks, so top_k=5 = 31% of the corpus) - a diagnostic experiment shrinking chunk size alone (word-based, not yet token-aware) *reduced* recall@5 to 0.944 rather than improving it, with two individually-diagnosed failures (see `progress/experiment-smaller-chunk-size.md`). Still open, to resume next session: whether an actual token-aware tokenizer swap behaves differently, and whether corpus expansion or a smarter chunking strategy is the better lever.
 
 ## Day 3 — Service layer + observability + tests
 

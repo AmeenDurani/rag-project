@@ -22,7 +22,7 @@ def _build_store() -> PineconeStore:
 
 
 @app.command()
-def ingest(namespace: str = "default") -> None:
+def ingest(namespace: str = "default", chunk_size: int = 500, overlap: int = 50) -> None:
     """Load PDFs from data/, chunk, embed, and upsert into Pinecone."""
     documents = load_documents()
     if not documents:
@@ -31,7 +31,9 @@ def ingest(namespace: str = "default") -> None:
 
     all_chunks = []
     for document in documents:
-        chunks = chunk_documents(document["pages"], document["source"])
+        chunks = chunk_documents(
+            document["pages"], document["source"], chunk_size=chunk_size, overlap=overlap
+        )
         all_chunks.extend(chunks)
 
     typer.echo(f"Loaded {len(documents)} document(s), {len(all_chunks)} chunk(s). Embedding...")

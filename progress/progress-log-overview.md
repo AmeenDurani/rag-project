@@ -12,7 +12,13 @@ None currently. Both API keys are in place as of `first-live-run-and-baseline-re
 
 Day 1 (full pipeline) and Day 2 milestones 1–3 (eval Q&A set, retrieval metrics, LLM-judge answer-quality eval) are now verified end-to-end, not just code-complete — see `first-live-run-and-baseline-results.md` for the real baseline numbers (recall@5 = 1.0, MRR = 0.863, faithfulness/relevance/scope accuracy all 1.0, spot-checked by hand rather than trusted blindly).
 
-**Next up (milestone 4):** upgrade `chunk_documents()` to a real tokenizer (fastembed's own, per the earlier design decision) instead of word-count chunking, then tune chunk size/overlap against the `baseline` results and re-run both eval scripts under a new `--label` to produce the before/after comparison the README needs.
+That perfect baseline turned out to be a ceiling effect, not a real signal: only 16 total chunks existed, so `top_k=5` retrieved 31% of the entire corpus every query. Ran a diagnostic experiment (`experiment-smaller-chunk-size.md`) testing whether shrinking chunk size alone (still word-based, not yet token-aware) would fix that - it does make recall@k discriminate again, but the *direction* was a slight regression, not an improvement, with two specific, individually-diagnosed failures (one content-dilution case, one list-fragmentation case that recall@k couldn't see but the answer-quality eval caught).
+
+**Next up (milestone 4, still open) — two undecided questions to resume with:**
+1. Does an actual token-aware tokenizer swap (still not done - the smaller-chunk experiment used the existing word-based chunker at a different size) behave differently than the naive size reduction did?
+2. Is corpus expansion (still not tried) the more fundamental fix, or is a smarter chunking *strategy* (e.g. one that doesn't split a numbered list across a chunk boundary, which is what broke q08 in the experiment) the better lever?
+
+Both are open; nothing has been decided about which to pursue first.
 
 ## Entries
 
@@ -25,3 +31,4 @@ Day 1 (full pipeline) and Day 2 milestones 1–3 (eval Q&A set, retrieval metric
 - [`add-retrieval-metrics-eval.md`](add-retrieval-metrics-eval.md) — recall@k/MRR scoring against the eval set, composition-root runner
 - [`add-answer-quality-eval.md`](add-answer-quality-eval.md) — LLM-as-judge faithfulness/relevance/scope-handling eval, binary pass/fail scoring
 - [`first-live-run-and-baseline-results.md`](first-live-run-and-baseline-results.md) — first real run against live Pinecone/Anthropic; baseline recall@k/MRR and answer-quality numbers, spot-checked
+- [`experiment-smaller-chunk-size.md`](experiment-smaller-chunk-size.md) — diagnosed the baseline's ceiling effect (16 total chunks); tested a smaller chunk size in an isolated namespace, found a regression with two specific diagnosed failures
